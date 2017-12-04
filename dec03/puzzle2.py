@@ -5,8 +5,11 @@
 import numpy as np
 
 def get_value(matrix, x, y):
+    if (x < 0) or (y < 0):
+        return 0
     try:
-        return matrix[x][y]
+        n = matrix[x][y]
+        return n 
     except IndexError:
         return 0
 
@@ -71,26 +74,12 @@ def fill_matrix (matrix, empty_matrix, number):
         surroundings = sum_surroundings(empty_matrix, (coor[0], coor[1]))
         empty_matrix[int(coor[0])][int(coor[1])] = surroundings
         cont = cont + 1
+    print ("Result: " + str(surroundings))
     return empty_matrix 
 
 #My input
-number = 9
+number = 277678
 
 matrix, empty_matrix = create_matrix(number)
 new_matrix = fill_matrix(matrix, empty_matrix, number)
-#Print matrix 
-for line in matrix:
-    print (line)
-   
-print ("----------")
 
-for line in empty_matrix:
-    print (line)
-numpy_matrix = np.array(matrix)
-initial_coor = np.where(numpy_matrix==1)
-mynum_coor = np.where(numpy_matrix==number)
-
-steps_x = initial_coor[0] - mynum_coor[0]
-steps_y = initial_coor[1] - mynum_coor[1]
-
-print ("Answer: " + str(abs(steps_x) + abs(steps_y)))
