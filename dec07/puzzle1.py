@@ -8,31 +8,51 @@ import re
 fo = open("input.txt", "r+")
 my_input = list(fo)
 
-# First lets separate children and parents
-final = {}
-parents = {}
+class Tree:
+    def __init__(self, name, weight, children=None):
+        self.name = name
+        self.weight = weight
+        self.children = children
+
+    def __str__(self):
+        return str(' '.join([self.name, str(self.weight), str(self.children)]))
+
+def getParent(line):
+    [name, children] = line.split('->')
+    children = children.split(',')
+    children = [x.strip() for x in children]
+    parent_name = re.findall(parent_name_regex, name)
+    parent_name = parent_name[0].strip()
+    value = re.findall(regex, line)
+    return parent_name, int(value[0]), children
+
+def getChild(line):
+    value = re.findall(regex, line)
+    child_name = line.split()[0]
+    return child_name, int(value[0])
+
+final = []
+parents = []
+seen_children = []
+seen_parents = []
+orphan_children = []
 regex = re.compile(".*?\((.*?)\)")
 parent_name_regex = re.compile("(.*?)\(")
 for line in my_input:
     line = line.strip()
     if ("->" in line):
-        [name, children] = line.split('->')
-        children = children.split(',')
-        children = [x.strip() for x in children]
-        value = re.findall(regex, name)
-        parent_name = re.findall(parent_name_regex, name)
-        parents[(parent_name, value)]=children 
+        [name, value, children] = getParent(line)
+        parents.append((name, value, children))
+        seen_parents.append(name)
+        seen_children.extend(children)
     else:
-        value = re.findall(regex, line)
-        final[line.split()[0]] = int(value[0])
+        [name, value] = getChild(line)
+        final.append((name, value))
 
-print (final)
-print ('------')
-print (parents)
-# Second, lets build the tree
-while (len(final) > 0):
-    for parent in parents:
-        children = parents[parent]
-        for child in children:
-            #if (child in parents):
-            pass;
+
+print ([child for child in seen_parents if child not in seen_children])
+
+
+
+
+        
